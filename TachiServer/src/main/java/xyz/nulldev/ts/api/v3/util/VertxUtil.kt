@@ -1,5 +1,7 @@
 package xyz.nulldev.ts.api.v3.util
 
+import io.vertx.core.AsyncResult
+import io.vertx.core.Future
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpClientRequest
@@ -81,14 +83,13 @@ fun <T> WriteStream<T>.watched(block: (T) -> Unit) = object : WriteStream<T> {
         return this@watched.writeQueueFull()
     }
 
-    override fun write(data: T): WriteStream<T> {
+    override fun write(data: T): Future<Void>? {
         block(data)
-        this@watched.write(data)
-        return this
+        return this@watched.write(data)
     }
 
-    override fun end() {
-        this@watched.end()
+    override fun end(): Future<Void>? {
+        return this@watched.end()
     }
 
     override fun drainHandler(handler: Handler<Void>?): WriteStream<T> {
@@ -99,6 +100,14 @@ fun <T> WriteStream<T>.watched(block: (T) -> Unit) = object : WriteStream<T> {
     override fun exceptionHandler(handler: Handler<Throwable>?): WriteStream<T> {
         this@watched.exceptionHandler(handler)
         return this
+    }
+
+    override fun write(data: T, handler: Handler<AsyncResult<Void>>?) {
+        this@watched.write(data, handler)
+    }
+
+    override fun end(handler: Handler<AsyncResult<Void>>?) {
+        this@watched.end(handler)
     }
 }
 
@@ -113,15 +122,16 @@ fun <T> combineWriteStreams(a: WriteStream<T>, b: WriteStream<T>) = object : Wri
         return a.writeQueueFull() || b.writeQueueFull()
     }
 
-    override fun write(data: T): WriteStream<T> {
+    //todo I have to idea what to return, so lets return b
+    override fun write(data: T): Future<Void>? {
         a.write(data)
-        b.write(data)
-        return this
+        return b.write(data)
     }
 
-    override fun end() {
+    //todo I have to idea what to return, so lets return b
+    override fun end(): Future<Void>? {
         a.end()
-        b.end()
+        return b.end()
     }
 
     override fun drainHandler(handler: Handler<Void>?): WriteStream<T> {
@@ -135,29 +145,40 @@ fun <T> combineWriteStreams(a: WriteStream<T>, b: WriteStream<T>) = object : Wri
         b.exceptionHandler(handler)
         return this
     }
+
+    override fun write(data: T, handler: Handler<AsyncResult<Void>>?) {
+        a.write(data, handler)
+        b.write(data, handler)
+    }
+
+    override fun end(handler: Handler<AsyncResult<Void>>?) {
+        a.end(handler)
+        b.end(handler)
+    }
 }
 
 suspend fun HttpClientRequest.awaitResponse() = suspendCoroutine<HttpClientResponse> { cont ->
     var resumed = false
 
-    handler {
-        pause()
+    // todo check to make sure I didnt break anything by using it.pause instead of pause, and changing it to onSuccess from handler because of the update
+    onSuccess {
+        it.pause()
         if (!resumed) {
             resumed = true
             cont.resume(it)
         }
     }
 
+    // todo check to make sure I didnt break anything by removing pause
     exceptionHandler {
-        pause()
         if (!resumed) {
             resumed = true
             cont.resumeWithException(it)
         }
     }
 
-    endHandler {
-        pause()
+    // todo check to make sure I didnt break anything by removing pause, and changing it to onFalure from endHandler because of the update
+    onFailure {
         if (!resumed) {
             resumed = true
             cont.resumeWithException(IllegalStateException("Stream ended with no response!"))

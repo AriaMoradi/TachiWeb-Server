@@ -31,6 +31,7 @@ import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
 import xyz.nulldev.ts.api.http.serializer.FilterSerializer
 import xyz.nulldev.ts.api.http.serializer.MangaSerializer
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -38,18 +39,17 @@ import xyz.nulldev.ts.ext.kInstanceLazy
  */
 class CatalogueRoute : TachiWebRoute() {
 
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
-    private val mangaSerializer: MangaSerializer by kInstanceLazy()
-    private val filtersSerializer: FilterSerializer by kInstanceLazy()
-    private val jsonParser: JsonParser by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
+    private val db: DatabaseHelper by kInstance()
+    private val mangaSerializer: MangaSerializer by kInstance()
+    private val filtersSerializer: FilterSerializer by kInstance()
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun handleReq(request: Request, response: Response): Any {
         try {
             //Get/parse parameters
-            val parsedBody = jsonParser.parse(request.body()).nullObj
+            val parsedBody = JsonParser.parseString(request.body()).nullObj
                     ?: return error("Invalid request!")
 
             val sourceId = parsedBody["sourceId"].nullLong

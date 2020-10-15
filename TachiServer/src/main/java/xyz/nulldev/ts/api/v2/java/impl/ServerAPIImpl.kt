@@ -8,10 +8,11 @@ import xyz.nulldev.ts.api.v2.java.impl.extensions.ExtensionsControllerImpl
 import xyz.nulldev.ts.api.v2.java.impl.library.LibraryControllerImpl
 import xyz.nulldev.ts.api.v2.java.impl.mangas.MangasControllerImpl
 import xyz.nulldev.ts.api.v2.java.model.ServerAPI
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 class ServerAPIImpl : ServerAPI {
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
 
     override val library = LibraryControllerImpl()
     override val chapters = ChaptersControllerImpl()

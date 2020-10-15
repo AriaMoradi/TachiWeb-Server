@@ -65,9 +65,9 @@ abstract class TachiWebRoute(
             request.attribute("session", session)
             //Auth all sessions if auth not enabled
             if (!SessionManager.authEnabled()) {
-                sessionManager.authenticateSession(session!!)
+                sessionManager.authenticateSession(session)
             }
-            if (!sessionManager.isAuthenticated(session!!) && requiresAuth) {
+            if (!sessionManager.isAuthenticated(session) && requiresAuth) {
                 //Not authenticated!
                 return error("Not authenticated!")
             } else {

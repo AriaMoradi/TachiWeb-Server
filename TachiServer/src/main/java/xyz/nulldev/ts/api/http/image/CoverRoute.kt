@@ -26,6 +26,7 @@ import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
 import xyz.nulldev.ts.ext.enableCache
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import xyz.nulldev.ts.library.LibraryUpdater
 import java.io.FileInputStream
@@ -37,10 +38,10 @@ import java.nio.file.Files
  */
 class CoverRoute : TachiWebRoute() {
 
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val coverCache: CoverCache by kInstanceLazy()
-    private val libraryUpdater: LibraryUpdater by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
+    private val coverCache: CoverCache by kInstance()
+    private val libraryUpdater: LibraryUpdater by kInstance()
+    private val db: DatabaseHelper by kInstance()
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -73,7 +74,7 @@ class CoverRoute : TachiWebRoute() {
             response.redirect("/img/no-cover.png", 302)
             return null
         }
-        val cacheFile = coverCache.getCoverFile(url!!)
+        val cacheFile = coverCache.getCoverFile(url)
         val parentFile = cacheFile.parentFile
         //Make cache dirs
         parentFile.mkdirs()
@@ -88,7 +89,7 @@ class CoverRoute : TachiWebRoute() {
                     val httpResponse = source.client.newCall(
                             okhttp3.Request.Builder().headers(source.headers).url(url).build()).execute()
                     httpResponse.use {
-                        val stream = httpResponse!!.body().byteStream()
+                        val stream = httpResponse.body!!.byteStream()
                         stream.use {
                             val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                             while (true) {

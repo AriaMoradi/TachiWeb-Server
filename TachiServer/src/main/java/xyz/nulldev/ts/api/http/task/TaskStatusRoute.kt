@@ -20,6 +20,7 @@ import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
 import xyz.nulldev.ts.api.task.TaskManager
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -29,7 +30,7 @@ import xyz.nulldev.ts.ext.kInstanceLazy
  */
 class TaskStatusRoute : TachiWebRoute() {
 
-    private val taskManager: TaskManager by kInstanceLazy()
+    private val taskManager: TaskManager by kInstance()
 
     override fun handleReq(request: Request, response: Response): Any {
         //Parse arguments

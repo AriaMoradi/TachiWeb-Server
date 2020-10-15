@@ -23,6 +23,7 @@ import org.json.JSONObject
 import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -32,7 +33,7 @@ import xyz.nulldev.ts.ext.kInstanceLazy
  */
 class ListLoginSourceRoute : TachiWebRoute() {
 
-    private val sourceManager: SourceManager by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
 
     override fun handleReq(request: Request, response: Response): Any {
         val builtResponse = success()

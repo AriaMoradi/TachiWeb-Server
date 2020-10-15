@@ -1,8 +1,5 @@
 package xyz.nulldev.ts.syncdeploy.api.endpoints
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
 import com.google.gson.JsonParser
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -16,12 +13,15 @@ import xyz.nulldev.ts.syncdeploy.SyncConfigModule
 import xyz.nulldev.ts.syncdeploy.api.JsonError
 import xyz.nulldev.ts.syncdeploy.api.JsonSuccess
 import xyz.nulldev.ts.ext.disableCache
+import xyz.nulldev.ts.ext.kInstance
 import java.nio.charset.Charset
 
 class AuthAPI(val am: AccountManager): Route {
-    private val syncConfig = Kodein.global.instance<ConfigManager>().module<SyncConfigModule>()
+    private val syncConfig by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<SyncConfigModule>()
+    }
     val client = OkHttpClient.Builder().build()
-    val jsonParser = JsonParser()
 
     override fun handle(request: Request, response: Response): Any {
         response.disableCache()
@@ -63,7 +63,7 @@ class AuthAPI(val am: AccountManager): Route {
                         .add("remoteip", ip)
                         .build()).build()).execute()
 
-        val captchaStatus = jsonParser.parse(resp.body()!!.string()).asJsonObject["success"].asBoolean
+        val captchaStatus = JsonParser.parseString(resp.body!!.string()).asJsonObject["success"].asBoolean
 
         if (!captchaStatus)
             return JsonError("RECAPTCHA challenge failed!")

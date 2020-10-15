@@ -15,7 +15,8 @@ class APIOperations(private val vertx: Vertx) : OperationGroup {
         val rawJson = this::class.java.getResourceAsStream(WebAPI.SPEC_LOCATION).bufferedReader().use {
             it.readText()
         }
-        kInstance<ObjectMapper>().cleanJson(rawJson)
+        val objectMapper by kInstance<ObjectMapper>()
+        objectMapper.cleanJson(rawJson)
     }
 
     override fun register(routerFactory: OpenAPI3RouterFactory) {

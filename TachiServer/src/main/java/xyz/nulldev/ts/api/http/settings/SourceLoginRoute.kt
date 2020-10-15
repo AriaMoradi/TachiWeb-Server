@@ -23,6 +23,7 @@ import eu.kanade.tachiyomi.source.online.LoginSource
 import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -32,8 +33,8 @@ import xyz.nulldev.ts.ext.kInstanceLazy
  */
 class SourceLoginRoute : TachiWebRoute() {
 
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val preferencesHelper: PreferencesHelper by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
+    private val preferencesHelper: PreferencesHelper by kInstance()
 
     override fun handleReq(request: Request, response: Response): Any {
         val sourceID = request.params(":sourceId")?.toLong()

@@ -42,7 +42,8 @@ interface OperationGroup {
 }
 
 internal val apiSerializer by lazy {
-    kInstance<ObjectMapper>().copy().setSerializationInclusion(JsonInclude.Include.NON_NULL)
+    val objectMapper by kInstance<ObjectMapper>()
+    objectMapper.copy().setSerializationInclusion(JsonInclude.Include.NON_NULL)
 }
 
 internal inline fun <reified Input, reified Output> OpenAPI3RouterFactory.op(

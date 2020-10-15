@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.network
 import android.content.Context
 import okhttp3.Cookie
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
@@ -17,7 +18,7 @@ class PersistentCookieStore(context: Context) {
             val cookies = value as? Set<String>
             if (cookies != null) {
                 try {
-                    val url = HttpUrl.parse("http://$key") ?: continue
+                    val url = "http://$key".toHttpUrlOrNull() ?: continue
                     val nonExpiredCookies = cookies.mapNotNull { Cookie.parse(url, it) }
                             .filter { !it.hasExpired() }
                     cookieMap.put(key, nonExpiredCookies)
@@ -30,13 +31,13 @@ class PersistentCookieStore(context: Context) {
 
     @Synchronized
     fun addAll(url: HttpUrl, cookies: List<Cookie>) {
-        val key = url.uri().host
+        val key = url.toUri().host
 
         // Append or replace the cookies for this domain.
         val cookiesForDomain = cookieMap[key].orEmpty().toMutableList()
         for (cookie in cookies) {
             // Find a cookie with the same name. Replace it if found, otherwise add a new one.
-            val pos = cookiesForDomain.indexOfFirst { it.name() == cookie.name() }
+            val pos = cookiesForDomain.indexOfFirst { it.name == cookie.name }
             if (pos == -1) {
                 cookiesForDomain.add(cookie)
             } else {
@@ -47,7 +48,7 @@ class PersistentCookieStore(context: Context) {
 
         // Get cookies to be stored in disk
         val newValues = cookiesForDomain.asSequence()
-                .filter { it.persistent() && !it.hasExpired() }
+                .filter { it.persistent && !it.hasExpired() }
                 .map(Cookie::toString)
                 .toSet()
 
@@ -65,7 +66,7 @@ class PersistentCookieStore(context: Context) {
         cookieMap.remove(uri.host)
     }
 
-    fun get(url: HttpUrl) = get(url.uri().host)
+    fun get(url: HttpUrl) = get(url.toUri().host)
 
     fun get(uri: URI) = get(uri.host)
 
@@ -73,6 +74,6 @@ class PersistentCookieStore(context: Context) {
         return cookieMap[url].orEmpty().filter { !it.hasExpired() }
     }
 
-    private fun Cookie.hasExpired() = System.currentTimeMillis() >= expiresAt()
+    private fun Cookie.hasExpired() = System.currentTimeMillis() >= expiresAt
 
 }

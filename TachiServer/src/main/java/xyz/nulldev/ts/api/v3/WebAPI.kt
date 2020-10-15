@@ -1,5 +1,6 @@
 package xyz.nulldev.ts.api.v3
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -16,6 +17,7 @@ import xyz.nulldev.ts.api.v3.operations.manga.MangaOperations
 import xyz.nulldev.ts.api.v3.operations.preferences.PreferenceOperations
 import xyz.nulldev.ts.api.v3.operations.server.ServerOperations
 import xyz.nulldev.ts.api.v3.operations.sources.SourceOperations
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -28,7 +30,7 @@ data class WebAPIInfo(
 )
 
 class WebAPI {
-    private val mapper by kInstanceLazy<ObjectMapper>()
+    private val mapper: ObjectMapper by kInstance()
 
     val vertx: Vertx = Vertx.vertx(vertxOptionsOf(
             warningExceptionTime = 500,
@@ -48,9 +50,9 @@ class WebAPI {
     suspend fun start() = suspendCoroutine<WebAPIInfo> { cont ->
         // Sort spec paths
         // TODO None of this stuff is non-blocking but it really shouldn't matter as we are still booting
-        val readSpec = this::class.java.getResourceAsStream(SPEC_LOCATION).use { mapper.readTree(it) } as ObjectNode
-        val newPaths = JsonNodeFactory.instance.objectNode()
-        readSpec["paths"].fields().asSequence().toList().sortedWith(Comparator { a, b ->
+        val readSpec: ObjectNode = this::class.java.getResourceAsStream(SPEC_LOCATION).use { mapper.readTree(it) } as ObjectNode
+        val newPaths: ObjectNode = JsonNodeFactory.instance.objectNode()
+        readSpec["paths"].fields().asSequence().toList().sortedWith { a, b ->
             val commonPrefix = a.key.commonPrefixWith(b.key)
             val aWithoutPrefix = a.key.substring(commonPrefix.length)
             val bWithoutPrefix = b.key.substring(commonPrefix.length)
@@ -62,11 +64,11 @@ class WebAPI {
             else if (!aWithoutPrefix[0].isLetterOrDigit() && bWithoutPrefix[0].isLetterOrDigit())
                 1
             else aWithoutPrefix.compareTo(bWithoutPrefix)
-        }).forEach { (key, value) ->
-            newPaths[key] = value
+        }.forEach { (key: String, value: JsonNode) ->
+            newPaths.set<ObjectNode>(key, value)
         }
 
-        readSpec["paths"] = newPaths
+        readSpec.set<ObjectNode>("paths", newPaths)
 
         val tmpSpecLocation = File.createTempFile("tw-oai-", null).apply { deleteOnExit() }
         mapper.writeValue(tmpSpecLocation, readSpec)

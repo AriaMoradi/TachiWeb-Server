@@ -21,11 +21,12 @@ import io.vertx.kotlin.core.file.closeAwait
 import io.vertx.kotlin.core.file.openAwait
 import io.vertx.kotlin.core.file.propsAwait
 import io.vertx.kotlin.core.http.httpClientOptionsOf
+import io.vertx.kotlin.core.onCompleteAwait
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.metadata.TikaCoreProperties
 import org.apache.tika.mime.MimeTypes
@@ -36,7 +37,7 @@ import xyz.nulldev.ts.api.v3.models.exceptions.WException
 import xyz.nulldev.ts.api.v3.models.manga.*
 import xyz.nulldev.ts.api.v3.util.*
 import xyz.nulldev.ts.cache.AsyncDiskLFUCache
-import xyz.nulldev.ts.ext.kInstanceLazy
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.library.LibraryUpdater
 import java.net.URL
 import java.nio.charset.StandardCharsets
@@ -46,12 +47,12 @@ private const val MANGA_ID_PARAM = "mangaId"
 class MangaOperations(private val vertx: Vertx) : OperationGroup {
     private val logger = KotlinLogging.logger { }
 
-    private val db: DatabaseHelper by kInstanceLazy()
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val libraryUpdater: LibraryUpdater by kInstanceLazy()
-    private val coverCache: AsyncDiskLFUCache by kInstanceLazy()
-    private val detector: MimeTypes by kInstanceLazy()
-    private val downloadManager: DownloadManager by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
+    private val sourceManager: SourceManager by kInstance()
+    private val libraryUpdater: LibraryUpdater by kInstance()
+    private val coverCache: AsyncDiskLFUCache by kInstance()
+    private val detector: MimeTypes by kInstance()
+    private val downloadManager: DownloadManager by kInstance()
 
     private val httpClient by lazy {
         vertx.createHttpClient(httpClientOptionsOf(
@@ -251,30 +252,29 @@ class MangaOperations(private val vertx: Vertx) : OperationGroup {
         } else {
             logger.debug { "Fetching manga cover @: $url" }
             // Build HTTP request for cover
-            val request = httpClient.get(URL(url).asRequestOptions())
+            val request = httpClient.get(URL(url).asRequestOptions().setFollowRedirects(true))
             if (source is HttpSource) {
-                source.headers.toMultimap().forEach { t, u ->
-                    request.putHeader(t, u)
+                source.headers.toMultimap().forEach { (t, u) ->
+                    request.context().put(t, u)
                 }
                 val cookieHeader = withContext(Dispatchers.IO) {
                     // loadForRequest can hit the disk
-                    source.client.cookieJar()
-                            .loadForRequest(HttpUrl.parse(url))
+                    source.client.cookieJar
+                            .loadForRequest(url.toHttpUrlOrNull()!!)
                             .map { it.toString() }
                             .joinToString("; ")
                 }
-                request.putHeader("Cookie", cookieHeader)
+                request.context().put("Cookie", cookieHeader)
             }
-            request.setFollowRedirects(true)
 
             // Prepare cache entry
             val cacheEntry = coverCache.put(url)
             val asyncFile = fs.openAwait(cacheEntry.file.absolutePath, OpenOptions())
 
             try {
-                // NOTE: NO SUSPEND CALLS can take place between awaitResponse and the call that reads the body of the response
+                // NOTE: NO SUSPEND CALLS can take place between onCompleteAwait and the call that reads the body of the response
                 //       This is because, otherwise, the handler will not be installed in time. Alternatively, pause the response
-                val coverResponse = request.awaitResponse()
+                val coverResponse = request.onCompleteAwait()
                 if (coverResponse.statusCode() != 200) {
                     //       Alternatively, just pause the stream
                     val body = coverResponse.awaitBody()
@@ -285,7 +285,7 @@ class MangaOperations(private val vertx: Vertx) : OperationGroup {
                 }
 
                 val coverResponseLength = coverResponse.getHeader(HttpHeaders.CONTENT_LENGTH)
-                val coverResponseLengthLong = coverResponseLength?.toLongOrNull()
+                val coverResponseLengthLong = coverResponseLength.toLongOrNull()
                 if (coverResponseLengthLong != null) {
                     rc.response().putHeader(HttpHeaders.CONTENT_LENGTH, coverResponseLength)
                 } else {
@@ -372,7 +372,7 @@ suspend fun Manga.asWeb(db: DatabaseHelper,
             statusAsWeb(),
             title,
             listOf(), // TODO
-            (sourceObj as? HttpSource)?.mangaDetailsRequest(this)?.url()?.toString(),
+            (sourceObj as? HttpSource)?.mangaDetailsRequest(this)?.url?.toString(),
             viewerAsWeb()
     )
 }

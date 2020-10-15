@@ -26,8 +26,6 @@ class BackupControllerImpl : BackupController {
     private val sourceManager: SourceManager by kInstanceLazy()
     private val context: Context by kInstanceLazy()
 
-    private val jsonParser = JsonParser()
-
     private val bmForwarder by lazy {
         BackupManagerInternalForwarder(backupManager)
     }
@@ -81,13 +79,13 @@ class BackupControllerImpl : BackupController {
     }
 
     override fun restore(backup: String) {
-        val json = jsonParser.parse(backup).asJsonObject
+        val json = JsonParser.parseString(backup).asJsonObject
         restore(json)
     }
 
     override fun restore(backup: InputStream) {
         val reader = JsonReader(backup.bufferedReader())
-        val json = jsonParser.parse(reader).asJsonObject
+        val json = JsonParser.parseReader(reader).asJsonObject
         restore(json)
     }
 

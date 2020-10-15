@@ -1,12 +1,11 @@
 package xyz.nulldev.ts.api.v2.java.impl.extensions
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.lazy
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.source.Source
+import org.kodein.di.DI
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 import xyz.nulldev.androidcompat.pm.PackageController
 import xyz.nulldev.ts.api.v2.java.impl.util.ProxyList
 import xyz.nulldev.ts.api.v2.java.model.PreparedInputStream
@@ -18,8 +17,8 @@ import java.net.URLConnection
 
 class ExtensionCollectionImpl(override val pkgName: List<String>): ExtensionCollection,
         List<ExtensionModel> by ProxyList(pkgName, { ExtensionCollectionProxy(it) }) {
-    private val manager by Kodein.global.lazy.instance<ExtensionManager>()
-    private val controller by Kodein.global.lazy.instance<PackageController>()
+    private val manager by DI.global.instance<ExtensionManager>()
+    private val controller by DI.global.instance<PackageController>()
 
     override val name: List<String>
         get() = mapPkgNames { it.name }

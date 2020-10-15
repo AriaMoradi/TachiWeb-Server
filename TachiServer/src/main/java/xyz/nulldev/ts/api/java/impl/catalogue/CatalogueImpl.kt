@@ -20,17 +20,18 @@ import xyz.nulldev.ts.api.java.model.catalogue.Catalogue
 import xyz.nulldev.ts.api.java.model.catalogue.CataloguePage
 import xyz.nulldev.ts.api.java.util.*
 import xyz.nulldev.ts.ext.fetchPageListFromCacheThenNet
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import java.util.*
 
 class CatalogueImpl : Catalogue {
-    private val sourceManager: SourceManager by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
     private val sourceInjector by lazy {
         SourceInjector(sourceManager)
     }
-    private val downloadManager: DownloadManager by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
-    private val prefs: PreferencesHelper by kInstanceLazy()
+    private val downloadManager: DownloadManager by kInstance()
+    private val db: DatabaseHelper by kInstance()
+    private val prefs: PreferencesHelper by kInstance()
 
     override val sources: List<CatalogueSource>
         get() = sourceManager.getCatalogueSources()

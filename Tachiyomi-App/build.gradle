@@ -19,21 +19,21 @@ dependencies {
     compile "com.github.salomonbrys.kotson:kotson:2.5.0"
 
     // Injekt
-    compile "uy.kohesive.injekt:injekt-core:[1.16.0,1.17.0)"
+    compile "com.github.inorichi.injekt:injekt-core:65b0440"
 
     // DiskLRUCache
     compile "com.jakewharton:disklrucache:2.0.2"
 
     // OkHttp
-    compile "com.squareup.okhttp3:okhttp:3.6.0"
+    compile "com.squareup.okhttp3:okhttp:4.10.0-RC1"
 
     // RxRelay
     compile "com.jakewharton.rxrelay:rxrelay:1.2.0"
 
     // Retrofit
-    compile "com.squareup.retrofit2:retrofit:2.2.0"
-    compile "com.squareup.retrofit2:adapter-rxjava:2.2.0"
-    compile "com.squareup.retrofit2:converter-gson:2.2.0"
+    compile "com.squareup.retrofit2:retrofit:2.9.0"
+    compile "com.squareup.retrofit2:adapter-rxjava:2.9.0"
+    compile "com.squareup.retrofit2:converter-gson:2.9.0"
 
     // XML Parser
     compile "xmlpull:xmlpull:1.1.3.1"
@@ -42,8 +42,8 @@ dependencies {
     compile "net.grey-panther:natural-comparator:1.1"
 
     // YAML
-    compile "org.yaml:snakeyaml:1.18"
+    compile "org.yaml:snakeyaml:1.27"
 
     // HTMLUnit for Cloudflare
-    compile 'net.sourceforge.htmlunit:htmlunit:2.35.0'
+    compile 'net.sourceforge.htmlunit:htmlunit:2.44.0'
 }

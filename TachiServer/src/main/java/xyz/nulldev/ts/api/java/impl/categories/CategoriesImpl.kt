@@ -6,11 +6,11 @@ import xyz.nulldev.ts.api.java.model.categories.Categories
 import xyz.nulldev.ts.api.java.model.categories.Category
 
 // Required for delegate
-private val categories = LazyList({
+private val categories = LazyList {
     TachiyomiAPI.database.getCategories().executeAsBlocking().map {
         CategoryImpl(it.name, true, it.id)
     }
-})
+}
 
 class CategoriesImpl : Categories, List<Category> by categories {
     internal var editIndex = 0L

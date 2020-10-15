@@ -28,16 +28,16 @@ import xyz.nulldev.ts.api.v3.opWithParams
 import xyz.nulldev.ts.api.v3.opWithParamsAndContext
 import xyz.nulldev.ts.api.v3.operations.manga.asWeb
 import xyz.nulldev.ts.api.v3.util.await
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import java.util.*
 
 private const val SOURCE_ID_PARAM = "sourceId"
 
 class SourceOperations(private val vertx: Vertx) : OperationGroup {
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val filtersSerializer: FilterSerializer by kInstanceLazy()
-    private val jsonParser: JsonParser by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
+    private val filtersSerializer: FilterSerializer by kInstance()
+    private val db: DatabaseHelper by kInstance()
 
     override fun register(routerFactory: OpenAPI3RouterFactory) {
         routerFactory.op(::getSources.name, ::getSources)
@@ -81,7 +81,7 @@ class SourceOperations(private val vertx: Vertx) : OperationGroup {
         val filtersObj = source.getFilterList()
         val filtersAreDefault = request.filters?.let {
             try {
-                filtersSerializer.deserialize(filtersObj, jsonParser.parse(it).array)
+                filtersSerializer.deserialize(filtersObj, JsonParser.parseString(it).array)
             } catch (t: Throwable) {
                 expectedError(500, FILTER_DESERIALIZATION_FAILED, t)
             }

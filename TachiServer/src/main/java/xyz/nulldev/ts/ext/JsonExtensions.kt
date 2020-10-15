@@ -8,7 +8,5 @@ import org.json.JSONObject
  * Created by nulldev on 5/11/17.
  */
 
-private val jsonParser: JsonParser by kInstanceLazy()
-
-fun JSONObject.gson() = jsonParser.parse(this.toString())!!
+fun JSONObject.gson() = JsonParser.parseString(this.toString())!!
 fun JsonObject.json() = JSONObject(this.toString())

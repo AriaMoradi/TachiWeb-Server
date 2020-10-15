@@ -7,11 +7,12 @@ import xyz.nulldev.ts.api.v2.java.impl.util.DbMapper
 import xyz.nulldev.ts.api.v2.java.impl.util.ProxyList
 import xyz.nulldev.ts.api.v2.java.model.categories.CategoryCollection
 import xyz.nulldev.ts.api.v2.java.model.categories.CategoryModel
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 class CategoryCollectionImpl(override val id: List<Int>) : CategoryCollection,
         List<CategoryModel> by ProxyList(id, { CategoryCollectionProxy(it) }) {
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
 
     private val dbMapper = DbMapper(
             id,

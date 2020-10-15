@@ -32,18 +32,19 @@ import spark.Response
 import spark.utils.IOUtils
 import xyz.nulldev.ts.api.http.TachiWebRoute
 import xyz.nulldev.ts.ext.enableCache
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 // TODO Alternative HttpPageLoader
 class ImageRoute : TachiWebRoute() {
 
-    private val downloadManager: DownloadManager by kInstanceLazy()
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val downloadManager: DownloadManager by kInstance()
+    private val sourceManager: SourceManager by kInstance()
+    private val db: DatabaseHelper by kInstance()
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val detector: MimeTypes by kInstanceLazy()
+    private val detector: MimeTypes by kInstance()
 
     override fun handleReq(request: Request, response: Response): Any {
         val mangaId = request.params(":mangaId")?.toLong()

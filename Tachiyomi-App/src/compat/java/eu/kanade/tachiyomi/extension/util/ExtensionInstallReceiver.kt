@@ -1,18 +1,17 @@
 package eu.kanade.tachiyomi.extension.util
 
 import android.content.Context
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.lazy
 import eu.kanade.tachiyomi.extension.model.Extension
+import org.kodein.di.DI
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 import xyz.nulldev.androidcompat.pm.PackageController
 
 /**
  * No-op listener
  */
 internal class ExtensionInstallReceiver(private val listener: Listener) {
-    private val controller by Kodein.global.lazy.instance<PackageController>()
+    private val controller by DI.global.instance<PackageController>()
 
     /**
      * Registers this broadcast receiver

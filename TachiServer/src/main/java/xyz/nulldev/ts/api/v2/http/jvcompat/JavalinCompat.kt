@@ -1,9 +1,9 @@
 package xyz.nulldev.ts.api.v2.http.jvcompat
 
-import io.javalin.UploadedFile
 import io.javalin.core.util.Header
-import io.javalin.core.util.MultipartUtil
-import io.javalin.translator.json.JavalinJsonPlugin
+import io.javalin.http.UploadedFile
+import io.javalin.http.util.MultipartUtil
+import io.javalin.plugin.json.JavalinJson
 import spark.Request
 import spark.Response
 import java.io.InputStream
@@ -14,7 +14,7 @@ typealias Context = Pair<Request, Response>
 
 fun Context.json(any: Any): Context {
     return contentType("application/json")
-            .result(JavalinJsonPlugin.objectToJsonMapper.map(any))
+            .result(JavalinJson.toJsonMapper.map(any))
 }
 
 fun Context.result(result: String): Context {
@@ -36,7 +36,7 @@ inline fun <reified T> Context.bodyAsClass() =
     bodyAsClass(T::class.java)
 
 fun <T> Context.bodyAsClass(clazz: Class<T>): T {
-    return JavalinJsonPlugin.jsonToObjectMapper.map(body(), clazz)
+    return JavalinJson.fromJsonMapper.map(body(), clazz)
 }
 
 fun Context.body(): String = bodyAsBytes().toString(Charset.forName(first.raw().characterEncoding ?: "UTF-8"))

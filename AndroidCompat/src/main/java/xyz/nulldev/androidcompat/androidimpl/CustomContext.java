@@ -31,9 +31,9 @@ import android.net.Uri;
 import android.os.*;
 import android.view.Display;
 import android.view.DisplayAdjustments;
-import com.github.salomonbrys.kodein.Kodein;
-import com.github.salomonbrys.kodein.KodeinAware;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.kodein.di.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.nulldev.androidcompat.info.ApplicationInfoImpl;
@@ -52,25 +52,25 @@ import java.util.Map;
  *
  * TODO Deal with packagemanager for extension sources
  */
-public class CustomContext extends Context implements KodeinAware {
-    private Kodein kodein;
+public class CustomContext extends Context implements DIAware {
+    private DI kodein;
     public CustomContext() {
         this(KodeinGlobalHelper.Companion.kodein());
     }
 
-    public CustomContext(Kodein kodein) {
+    public CustomContext(DI kodein) {
         this.kodein = kodein;
 
         //Init configs
-        androidFiles = getKodein().getTyped().instance(AndroidFiles.class);
-        applicationInfo = getKodein().getTyped().instance(ApplicationInfoImpl.class);
-        serviceSupport = getKodein().getTyped().instance(ServiceSupport.class);
-        fakePackageManager = getKodein().getTyped().instance(FakePackageManager.class);
+        androidFiles = KodeinGlobalHelper.Companion.instance(AndroidFiles.class, getDi());
+        applicationInfo = KodeinGlobalHelper.Companion.instance(ApplicationInfoImpl.class, getDi());
+        serviceSupport = KodeinGlobalHelper.Companion.instance(ServiceSupport.class, getDi());
+        fakePackageManager = KodeinGlobalHelper.Companion.instance(FakePackageManager.class, getDi());
     }
 
     @NotNull
     @Override
-    public Kodein getKodein() {
+    public DI getDi() {
         return kodein;
     }
 
@@ -721,4 +721,18 @@ public class CustomContext extends Context implements KodeinAware {
     public boolean isCredentialProtectedStorage() {
         return false;
     }
+
+    @NotNull
+    @Override
+    public DIContext<?> getDiContext() {
+        return getDi().getDiContext();
+    }
+
+    @Nullable
+    @Override
+    public DITrigger getDiTrigger() {
+        return null;
+    }
 }
+
+

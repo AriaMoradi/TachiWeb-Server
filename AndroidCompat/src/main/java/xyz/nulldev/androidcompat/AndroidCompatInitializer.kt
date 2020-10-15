@@ -1,7 +1,7 @@
 package xyz.nulldev.androidcompat
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
+import org.kodein.di.DI
+import org.kodein.di.conf.global
 import xyz.nulldev.androidcompat.bytecode.ModApplier
 import xyz.nulldev.androidcompat.config.ApplicationInfoConfigModule
 import xyz.nulldev.androidcompat.config.FilesConfigModule
@@ -18,7 +18,7 @@ class AndroidCompatInitializer {
     fun init() {
         modApplier.apply()
 
-        Kodein.global.addImport(AndroidCompatModule().create())
+        DI.global.addImport(AndroidCompatModule().create())
 
         //Register config modules
         GlobalConfigManager.registerModules(

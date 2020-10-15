@@ -4,6 +4,7 @@ import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.source.model.*
 import eu.kanade.tachiyomi.source.online.ParsedHttpSource
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -81,7 +82,7 @@ class Mangahere : ParsedHttpSource() {
     override fun latestUpdatesNextPageSelector() = "div.next-page > a.next"
 
     override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request {
-        val url = HttpUrl.parse("$baseUrl/search.php?name_method=cw&author_method=cw&artist_method=cw&advopts=1")!!.newBuilder().addQueryParameter("name", query)
+        val url = "$baseUrl/search.php?name_method=cw&author_method=cw&artist_method=cw&advopts=1".toHttpUrlOrNull()!!.newBuilder().addQueryParameter("name", query)
         (if (filters.isEmpty()) getFilterList() else filters).forEach { filter ->
             when (filter) {
                 is Status -> url.addQueryParameter("is_completed", arrayOf("", "1", "0")[filter.state])

@@ -1,17 +1,20 @@
 package xyz.nulldev.ts.syncdeploy
 
-import com.github.salomonbrys.kodein.conf.KodeinGlobalAware
-import com.github.salomonbrys.kodein.instance
+import org.kodein.di.conf.DIGlobalAware
 import spark.Route
 import spark.Spark
 import xyz.nulldev.ts.config.ConfigManager
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.syncdeploy.api.endpoints.AuthAPI
 import xyz.nulldev.ts.syncdeploy.api.endpoints.ChangePasswordAPI
 import xyz.nulldev.ts.syncdeploy.api.endpoints.ClearDataAPI
 import xyz.nulldev.ts.syncdeploy.api.endpoints.CloseAccountAPI
 
-class TSSyncDeploy: KodeinGlobalAware {
-    private val config = instance<ConfigManager>().module<SyncConfigModule>()
+class TSSyncDeploy: DIGlobalAware {
+    private val config by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<SyncConfigModule>()
+    }
     private val accountManager = AccountManager()
 
     fun bindSyncRoutes() {

@@ -6,11 +6,12 @@ import xyz.nulldev.ts.api.v2.java.impl.util.ProxyList
 import xyz.nulldev.ts.api.v2.java.model.chapters.ChapterCollection
 import xyz.nulldev.ts.api.v2.java.model.chapters.ChapterModel
 import xyz.nulldev.ts.api.v2.java.model.chapters.ReadingStatus
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 class ChapterCollectionImpl(override val id: List<Long>): ChapterCollection,
         List<ChapterModel> by ProxyList(id, { ChapterCollectionProxy(it) }) {
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
 
     private val dbMapper = DbMapper(
             id,

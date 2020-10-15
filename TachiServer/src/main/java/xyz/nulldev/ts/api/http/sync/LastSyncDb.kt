@@ -1,15 +1,18 @@
 package xyz.nulldev.ts.api.http.sync
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.KodeinAware
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.conf.global
 import xyz.nulldev.ts.config.ConfigManager
 import xyz.nulldev.ts.config.ServerConfig
+import xyz.nulldev.ts.ext.kInstance
 import java.io.File
 
-class LastSyncDb(override val kodein: Kodein = Kodein.global): KodeinAware {
-    private val serverConfig = instance<ConfigManager>().module<ServerConfig>()
+class LastSyncDb(override val di: DI = DI.global): DIAware {
+    private val serverConfig by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<ServerConfig>()
+    }
     private val dbFile = File(serverConfig.rootDir, "last_sync.db")
 
     val lastSyncs by lazy {

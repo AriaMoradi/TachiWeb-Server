@@ -1,10 +1,10 @@
 package xyz.nulldev.ts
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
 import eu.kanade.tachiyomi.App
 import kotlinx.coroutines.runBlocking
 import org.apache.commons.lang3.SystemUtils
+import org.kodein.di.DI
+import org.kodein.di.conf.global
 import spark.Spark
 import xyz.nulldev.androidcompat.AndroidCompat
 import xyz.nulldev.androidcompat.AndroidCompatInitializer
@@ -45,13 +45,13 @@ class TachiServer {
         registerConfigModules()
 
         //Load config API
-        Kodein.global.addImport(ConfigKodeinModule().create())
+        DI.global.addImport(ConfigKodeinModule().create())
         //Load Android compatibility dependencies
         AndroidCompatInitializer().init()
         //Load TachiServer and Tachiyomi dependencies
-        Kodein.global.addImport(TachiyomiKodeinModule().create())
+        DI.global.addImport(TachiyomiKodeinModule().create())
         //Load HTTP server dependencies
-        Kodein.global.addImport(HttpModule().create())
+        DI.global.addImport(HttpModule().create())
 
         //Start app
         androidCompat.startApp(App())

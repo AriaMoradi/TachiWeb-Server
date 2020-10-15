@@ -8,17 +8,18 @@ import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import eu.kanade.tachiyomi.network.asObservableSuccess
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import rx.Observable
 import java.util.*
 
 
 class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
 
-    private val parser = JsonParser()
-    private val jsonMime = MediaType.parse("application/json; charset=utf-8")
+    private val jsonMime = "application/json; charset=utf-8".toMediaTypeOrNull()
     private val authClient = client.newBuilder().addInterceptor(interceptor).build()
 
 
@@ -45,12 +46,12 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
         return authClient.newCall(request)
                 .asObservableSuccess()
                 .map { netResponse ->
-                    val responseBody = netResponse.body()?.string().orEmpty()
+                    val responseBody = netResponse.body?.string().orEmpty()
                     netResponse.close()
                     if (responseBody.isEmpty()) {
                         throw Exception("Null Response")
                     }
-                    val response = parser.parse(responseBody).obj
+                    val response = JsonParser.parseString(responseBody).obj
                     track.library_id = response["data"]["SaveMediaListEntry"]["id"].asLong
                     track
                 }
@@ -128,11 +129,11 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
         return authClient.newCall(request)
                 .asObservableSuccess()
                 .map { netResponse ->
-                    val responseBody = netResponse.body()?.string().orEmpty()
+                    val responseBody = netResponse.body?.string().orEmpty()
                     if (responseBody.isEmpty()) {
                         throw Exception("Null Response")
                     }
-                    val response = parser.parse(responseBody).obj
+                    val response = JsonParser.parseString(responseBody).obj
                     val data = response["data"]!!.obj
                     val page = data["Page"].obj
                     val media = page["media"].array
@@ -189,11 +190,11 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
         return authClient.newCall(request)
                 .asObservableSuccess()
                 .map { netResponse ->
-                    val responseBody = netResponse.body()?.string().orEmpty()
+                    val responseBody = netResponse.body?.string().orEmpty()
                     if (responseBody.isEmpty()) {
                         throw Exception("Null Response")
                     }
-                    val response = parser.parse(responseBody).obj
+                    val response = JsonParser.parseString(responseBody).obj
                     val data = response["data"]!!.obj
                     val page = data["Page"].obj
                     val media = page["mediaList"].array
@@ -227,7 +228,7 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
         val payload = jsonObject(
                 "query" to query
         )
-        val body = RequestBody.create(jsonMime, payload.toString())
+        val body = payload.toString().toRequestBody(jsonMime)
         val request = Request.Builder()
                 .url(apiUrl)
                 .post(body)
@@ -235,11 +236,11 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
         return authClient.newCall(request)
                 .asObservableSuccess()
                 .map { netResponse ->
-                    val responseBody = netResponse.body()?.string().orEmpty()
+                    val responseBody = netResponse.body?.string().orEmpty()
                     if (responseBody.isEmpty()) {
                         throw Exception("Null Response")
                     }
-                    val response = parser.parse(responseBody).obj
+                    val response = JsonParser.parseString(responseBody).obj
                     val data = response["data"]!!.obj
                     val viewer = data["Viewer"].obj
                     Pair(viewer["id"].asInt, viewer["mediaListOptions"]["scoreFormat"].asString)

@@ -17,7 +17,7 @@ class CloudflareInterceptor : Interceptor {
         val response = chain.proceed(chain.request())
 
         // Check if Cloudflare anti-bot is on
-        if (response.code() == 503 && response.header("Server") in serverCheck) {
+        if (response.code == 503 && response.header("Server") in serverCheck) {
             return try {
                 chain.proceed(resolveChallenge(response))
             } catch (e: Exception) {
@@ -32,12 +32,12 @@ class CloudflareInterceptor : Interceptor {
 
     private fun resolveChallenge(response: Response): Request {
         val browserVersion = BrowserVersion.BrowserVersionBuilder(BrowserVersion.BEST_SUPPORTED)
-                .setUserAgent(response.request().header("User-Agent") ?: BrowserVersion.BEST_SUPPORTED.userAgent)
+                .setUserAgent(response.request.header("User-Agent") ?: BrowserVersion.BEST_SUPPORTED.userAgent)
                 .build()
         val convertedCookies = WebClient(browserVersion).use { webClient ->
             webClient.options.isThrowExceptionOnFailingStatusCode = false
             webClient.options.isThrowExceptionOnScriptError = false
-            webClient.getPage<HtmlPage>(response.request().url().toString())
+            webClient.getPage<HtmlPage>(response.request.url.toString())
             webClient.waitForBackgroundJavaScript(10000)
             // Challenge solved, process cookies
             webClient.cookieManager.cookies.filter {
@@ -62,7 +62,7 @@ class CloudflareInterceptor : Interceptor {
             network.cookies.addAll(
                     HttpUrl.Builder()
                             .scheme("http")
-                            .host(it.domain())
+                            .host(it.domain)
                             .build(),
                     listOf(it)
             )
@@ -70,19 +70,19 @@ class CloudflareInterceptor : Interceptor {
         // Merge new and existing cookies for this request
         // Find the cookies that we need to merge into this request
         val convertedForThisRequest = convertedCookies.filter {
-            it.matches(response.request().url())
+            it.matches(response.request.url)
         }
         // Extract cookies from current request
         val existingCookies = Cookie.parseAll(
-                response.request().url(),
-                response.request().headers()
+            response.request.url,
+            response.request.headers
         )
         // Filter out existing values of cookies that we are about to merge in
         val filteredExisting = existingCookies.filter { existing ->
-            convertedForThisRequest.none { converted -> converted.name() == existing.name() }
+            convertedForThisRequest.none { converted -> converted.name == existing.name }
         }
         val newCookies = filteredExisting + convertedForThisRequest
-        return response.request().newBuilder()
+        return response.request.newBuilder()
                 .header("Cookie", newCookies.map { it.toString() }.joinToString("; "))
                 .build()
     }

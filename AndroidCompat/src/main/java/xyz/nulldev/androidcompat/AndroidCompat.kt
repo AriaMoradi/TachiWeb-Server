@@ -1,15 +1,14 @@
 package xyz.nulldev.androidcompat
 
 import android.app.Application
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.lazy
+import org.kodein.di.DI
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 import xyz.nulldev.androidcompat.androidimpl.CustomContext
 
 class AndroidCompat {
 
-    val context: CustomContext by Kodein.global.lazy.instance()
+    val context: CustomContext by DI.global.instance()
 
     fun startApp(application: Application) {
         application.attach(context)

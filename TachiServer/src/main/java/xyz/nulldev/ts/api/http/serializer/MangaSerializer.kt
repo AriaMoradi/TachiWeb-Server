@@ -27,6 +27,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import xyz.nulldev.ts.api.http.manga.MangaFlag
 import xyz.nulldev.ts.api.java.util.isDownloaded
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -37,9 +38,9 @@ import xyz.nulldev.ts.ext.kInstanceLazy
 
 class MangaSerializer {
 
-    private val db: DatabaseHelper by kInstanceLazy()
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val downloadManager: DownloadManager by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
+    private val sourceManager: SourceManager by kInstance()
+    private val downloadManager: DownloadManager by kInstance()
 
     fun serialize(manga: Manga, fromLibrary: Boolean = false): JSONObject {
         val builtResponse = JSONObject()

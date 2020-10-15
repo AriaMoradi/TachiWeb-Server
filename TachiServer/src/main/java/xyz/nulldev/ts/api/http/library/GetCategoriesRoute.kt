@@ -6,6 +6,7 @@ import org.json.JSONObject
 import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -14,7 +15,7 @@ import xyz.nulldev.ts.ext.kInstanceLazy
 
 class GetCategoriesRoute : TachiWebRoute() {
 
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
 
     override fun handleReq(request: Request, response: Response): Any? {
         return success().put(KEY_CONTENT,

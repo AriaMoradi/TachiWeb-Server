@@ -4,10 +4,11 @@ import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.database.models.Category
 import xyz.nulldev.ts.api.v2.java.model.categories.CategoriesController
 import xyz.nulldev.ts.api.v2.java.model.categories.CategoryModel
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 class CategoriesControllerImpl : CategoriesController {
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
 
     override fun get(vararg categoryIds: Int)
             = CategoryCollectionImpl(categoryIds.toList()) // TODO Check these categories exist

@@ -12,12 +12,13 @@ import xyz.nulldev.ts.api.v3.models.chapters.WChapterReadingStatus
 import xyz.nulldev.ts.api.v3.op
 import xyz.nulldev.ts.api.v3.opWithParams
 import xyz.nulldev.ts.api.v3.util.await
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 private const val CHAPTER_ID_PARAM = "chapterId"
 
 class ChapterOperations(private val vertx: Vertx) : OperationGroup {
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
 
     override fun register(routerFactory: OpenAPI3RouterFactory) {
         routerFactory.op(::getChapters.name, ::getChapters)

@@ -29,6 +29,7 @@ import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
 import xyz.nulldev.ts.api.java.util.download
 import xyz.nulldev.ts.api.java.util.isDownloaded
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -38,9 +39,9 @@ import xyz.nulldev.ts.ext.kInstanceLazy
  */
 class ChaptersRoute : TachiWebRoute() {
 
-    private val downloadManager: DownloadManager by kInstanceLazy()
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val downloadManager: DownloadManager by kInstance()
+    private val sourceManager: SourceManager by kInstance()
+    private val db: DatabaseHelper by kInstance()
 
     override fun handleReq(request: Request, response: Response): Any {
         val mangaId = request.params(":mangaId")?.toLong()

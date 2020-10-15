@@ -1,5 +1,6 @@
 package xyz.nulldev.ts.api.v3.operations.preferences
 
+import android.content.Context
 import android.preference.PreferenceManager
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.vertx.core.Vertx
@@ -19,13 +20,14 @@ private const val SCHEMA_LOCATION = "/pref-schema.json"
 private const val PREFERENCE_KEY_PARAM = "preferenceKey"
 
 class PreferenceOperations(private val vertx: Vertx) : OperationGroup {
-    private val preferences = PreferenceManager.getDefaultSharedPreferences(kInstance()) as JsonSharedPreferences
+    private val preferences = PreferenceManager.getDefaultSharedPreferences({val context: Context by kInstance(); context}()) as JsonSharedPreferences
 
     private val schema by lazy {
         val rawJson = this::class.java.getResourceAsStream(SCHEMA_LOCATION).bufferedReader().use {
             it.readText()
         }
-        kInstance<ObjectMapper>().cleanJson(rawJson)
+        val objectMapper by kInstance<ObjectMapper>()
+        objectMapper.cleanJson(rawJson)
     }
 
     override fun register(routerFactory: OpenAPI3RouterFactory) {

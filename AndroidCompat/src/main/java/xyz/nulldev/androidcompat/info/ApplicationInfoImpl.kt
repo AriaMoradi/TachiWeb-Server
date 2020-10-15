@@ -1,15 +1,15 @@
 package xyz.nulldev.androidcompat.info
 
 import android.content.pm.ApplicationInfo
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.KodeinAware
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 import xyz.nulldev.androidcompat.config.ApplicationInfoConfigModule
 import xyz.nulldev.ts.config.ConfigManager
 
-class ApplicationInfoImpl(override val kodein: Kodein = Kodein.global) : ApplicationInfo(), KodeinAware {
-    val configManager: ConfigManager = kodein.instance()
+class ApplicationInfoImpl(override val di: DI = DI.global) : ApplicationInfo(), DIAware {
+    val configManager: ConfigManager by di.instance()
 
     val appInfoConfig: ApplicationInfoConfigModule
         get() = configManager.module()

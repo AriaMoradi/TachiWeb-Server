@@ -11,14 +11,15 @@ import eu.kanade.tachiyomi.source.SourceManager
 import xyz.nulldev.ts.api.java.model.downloads.DownloadController
 import xyz.nulldev.ts.api.java.model.downloads.DownloadTask
 import xyz.nulldev.ts.api.java.util.*
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import kotlin.reflect.jvm.isAccessible
 
 class DownloadControllerImpl : DownloadController {
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val downloadManager: DownloadManager by kInstanceLazy()
-    private val context : Context by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
+    private val downloadManager: DownloadManager by kInstance()
+    private val context : Context by kInstance()
+    private val db: DatabaseHelper by kInstance()
     internal val downloadProvider by lazy {
         val field = DownloadManager::class.members.find {
             it.name == "provider"

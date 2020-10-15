@@ -36,9 +36,12 @@ import xyz.nulldev.ts.ext.kInstanceLazy
  * Creation Date: 30/09/16
  */
 class SetPreferenceRoute : TachiWebRoute() {
-    private val context: Context by kInstanceLazy()
+    private val context: Context by kInstance()
 
-    private val serverConfig by lazy { kInstance<ConfigManager>().module<ServerConfig>() }
+    private val serverConfig by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<ServerConfig>()
+    }
 
     override fun handleReq(request: Request, response: Response): Any {
         //Do not allow changing configuration in demo mode

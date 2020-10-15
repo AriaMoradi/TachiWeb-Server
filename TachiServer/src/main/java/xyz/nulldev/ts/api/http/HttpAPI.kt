@@ -18,6 +18,7 @@ package xyz.nulldev.ts.api.http
 
 import mu.KotlinLogging
 import okhttp3.*
+import okhttp3.Headers.Companion.toHeaders
 import spark.Route
 import spark.Spark
 import xyz.nulldev.ts.api.http.auth.CheckSessionRoute
@@ -58,7 +59,10 @@ import java.util.concurrent.TimeUnit
  * Creation Date: 30/09/16
  */
 class HttpAPI {
-    private val serverConfig by lazy { kInstance<ConfigManager>().module<ServerConfig>() }
+    private val serverConfig by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<ServerConfig>()
+    }
 
     private val logger = KotlinLogging.logger { }
 
@@ -249,18 +253,18 @@ class HttpAPI {
                                 RequestBody.create(null, incoming.bodyAsBytes())
                             else null
                     )
-                    .headers(Headers.of(incoming.headers().associateWith { incoming.headers(it) }))
+                    .headers(incoming.headers().associateWith { incoming.headers(it) }.toHeaders())
                     .build()
 
             val result = proxyHttpClient.newCall(request).execute()
 
-            outgoing.status(result.code())
-            result.headers().toMultimap().forEach { name, values ->
+            outgoing.status(result.code)
+            result.headers.toMultimap().forEach { (name, values) ->
                 values.forEach { value ->
                     outgoing.header(name, value)
                 }
             }
-            result.body().byteStream().use { resultBody ->
+            result.body!!.byteStream().use { resultBody ->
                 resultBody.copyTo(outgoing.raw().outputStream)
             }
 
@@ -290,21 +294,21 @@ class HttpAPI {
         if(!checkApi(path)) return
         val builtPath = buildAPIPath(path)
         Spark.get(builtPath, route)
-        Spark.get(builtPath + "/", route)
+        Spark.get("$builtPath/", route)
     }
 
     private fun postAPIRoute(path: String, route: Route) {
         if(!checkApi(path)) return
         val builtPath = buildAPIPath(path)
         Spark.post(builtPath, route)
-        Spark.post(builtPath + "/", route)
+        Spark.post("$builtPath/", route)
     }
 
     private fun deleteAPIRoute(path: String, route: Route) {
         if(!checkApi(path)) return
         val builtPath = buildAPIPath(path)
         Spark.delete(builtPath, route)
-        Spark.delete(builtPath + "/", route)
+        Spark.delete("$builtPath/", route)
     }
 
     fun checkApi(path: String): Boolean {

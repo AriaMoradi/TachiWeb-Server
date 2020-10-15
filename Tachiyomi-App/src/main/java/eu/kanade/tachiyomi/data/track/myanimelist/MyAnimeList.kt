@@ -118,10 +118,10 @@ class Myanimelist(private val context: Context, id: Int) : TrackService(id) {
     }
 
     override val isLogged: Boolean
-        get() = !getUsername().isEmpty() &&
-                !getPassword().isEmpty() &&
+        get() = getUsername().isNotEmpty() &&
+            getPassword().isNotEmpty() &&
                 checkCookies(URI(BASE_URL)) &&
-                !getCSRF().isEmpty()
+            getCSRF().isNotEmpty()
 
     private fun getCSRF(): String = preferences.trackToken(this).getOrDefault()
 
@@ -131,7 +131,7 @@ class Myanimelist(private val context: Context, id: Int) : TrackService(id) {
         var ckCount = 0
 
         for (ck in networkService.cookies.get(uri)) {
-            if (ck.name() == USER_SESSION_COOKIE || ck.name() == LOGGED_IN_COOKIE)
+            if (ck.name == USER_SESSION_COOKIE || ck.name == LOGGED_IN_COOKIE)
                 ckCount++
         }
 

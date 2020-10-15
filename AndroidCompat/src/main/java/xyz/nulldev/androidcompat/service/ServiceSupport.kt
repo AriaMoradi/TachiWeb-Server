@@ -25,7 +25,7 @@ class ServiceSupport {
 
         val service = serviceInstanceFromClass(name)
 
-        runningServices.put(name, service)
+        runningServices[name] = service
 
         //Setup service
         thread {
@@ -62,7 +62,7 @@ class ServiceSupport {
 
     fun serviceInstanceFromClass(className: String): Service {
         val clazzObj = Class.forName(className)
-        return clazzObj.newInstance() as? Service
+        return clazzObj.getDeclaredConstructor().newInstance() as? Service
                 ?: throw IllegalArgumentException("$className is not a Service!")
     }
 }

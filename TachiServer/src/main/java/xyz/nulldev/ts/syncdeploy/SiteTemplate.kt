@@ -1,13 +1,16 @@
 package xyz.nulldev.ts.syncdeploy
 
-import com.github.salomonbrys.kodein.conf.KodeinGlobalAware
-import com.github.salomonbrys.kodein.instance
 import kotlinx.html.*
 import kotlinx.html.stream.createHTML
+import org.kodein.di.conf.DIGlobalAware
 import xyz.nulldev.ts.config.ConfigManager
+import xyz.nulldev.ts.ext.kInstance
 
-class SiteTemplate(private val mainPagePath: String) : KodeinGlobalAware {
-    private val conf = instance<ConfigManager>().module<SyncConfigModule>()
+class SiteTemplate(private val mainPagePath: String) : DIGlobalAware {
+    private val conf by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<SyncConfigModule>()
+    }
 
     fun build(title: String, showLogout: Boolean = true, exec: DIV.() -> Unit): String {
         return createHTML(false).html {

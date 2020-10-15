@@ -9,6 +9,7 @@ import eu.kanade.tachiyomi.util.syncChaptersWithSource
 import mu.KotlinLogging
 import rx.schedulers.Schedulers
 import xyz.nulldev.ts.api.v3.util.await
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import java.util.*
 
@@ -37,8 +38,8 @@ class LibraryUpdater {
 
     private val logger = KotlinLogging.logger {}
 
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
+    private val db: DatabaseHelper by kInstance()
 
     @Deprecated("Use async variant instead")
     fun _updateLibrary(updateAll: Boolean) {

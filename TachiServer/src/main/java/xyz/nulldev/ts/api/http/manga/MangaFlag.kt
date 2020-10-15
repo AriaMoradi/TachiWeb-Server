@@ -77,7 +77,7 @@ enum class MangaFlag constructor(private val flagMask: Int,
     override fun toString(): String {
         return "MangaFlag{" +
                 "flagMask=" + flagMask +
-                ", flagStates=" + Arrays.toString(flagStates) +
+                ", flagStates=" + flagStates.contentToString() +
                 '}'
     }
 
@@ -93,7 +93,7 @@ enum class MangaFlag constructor(private val flagMask: Int,
         }
 
         override fun hashCode(): Int {
-            var result = if (name != null) name.hashCode() else 0
+            var result = name?.hashCode() ?: 0
             result = 31 * result + value
             return result
         }

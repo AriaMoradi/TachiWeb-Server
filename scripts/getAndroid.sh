@@ -14,7 +14,7 @@ rm -rf "tmp"
 mkdir -p "tmp"
 pushd "tmp"
 
-curl "https://android.googlesource.com/platform/prebuilts/sdk/+/3b8a524d25fa6c3d795afb1eece3f24870c60988/27/public/android.jar?format=TEXT" | base64 --decode > android.jar
+curl "https://android.googlesource.com/platform/prebuilts/sdk/+/f838d0a8253fc9a492faaa02d526da827de3c129/29/public/android.jar?format=TEXT" | base64 --decode > android.jar
 
 # We need to remove any stub classes that we might use
 echo "Patching JAR..."

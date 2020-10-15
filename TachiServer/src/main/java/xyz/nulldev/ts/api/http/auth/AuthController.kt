@@ -1,6 +1,6 @@
 package xyz.nulldev.ts.api.http.auth
 
-import io.javalin.Context
+import io.javalin.http.Context
 
 object AuthController {
     fun login(ctx: Context) {
@@ -12,7 +12,7 @@ object AuthController {
 
         val authPw = SessionManager.authPassword()
 
-        val valid = if(password!!.isEmpty())
+        val valid = if(password.isEmpty())
             authPw.isEmpty()
         else
             authPw.isNotEmpty() && PasswordHasher.check(password, authPw)

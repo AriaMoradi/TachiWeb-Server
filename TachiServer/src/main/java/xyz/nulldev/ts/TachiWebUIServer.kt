@@ -28,7 +28,10 @@ import java.io.File
  * UI Server
  */
 class TachiWebUIServer {
-    private val serverConfig by lazy { kInstance<ConfigManager>().module<ServerConfig>() }
+    private val serverConfig by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<ServerConfig>()
+    }
 
     private val NEW_UI_FOLDER = "/tachiweb-react/build"
     private val NEW_UI_INDEX = "$NEW_UI_FOLDER/index.html"

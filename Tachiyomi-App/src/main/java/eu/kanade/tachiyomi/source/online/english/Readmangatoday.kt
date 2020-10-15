@@ -105,7 +105,7 @@ class Readmangatoday : ParsedHttpSource() {
         manga.status = detailElement.select("dl.dl-horizontal > dd:eq(3)").first()?.text().orEmpty().let { parseStatus(it) }
         manga.thumbnail_url = detailElement.select("img.img-responsive").first()?.attr("src")
 
-        var genres = mutableListOf<String>()
+        val genres = mutableListOf<String>()
         genreElement?.forEach { genres.add(it.text()) }
         manga.genre = genres.joinToString(", ")
 
@@ -137,18 +137,25 @@ class Readmangatoday : ParsedHttpSource() {
             val timeAgo = Integer.parseInt(dateWords[0])
             val date: Calendar = Calendar.getInstance()
 
-            if (dateWords[1].contains("Minute")) {
-                date.add(Calendar.MINUTE, -timeAgo)
-            } else if (dateWords[1].contains("Hour")) {
-                date.add(Calendar.HOUR_OF_DAY, -timeAgo)
-            } else if (dateWords[1].contains("Day")) {
-                date.add(Calendar.DAY_OF_YEAR, -timeAgo)
-            } else if (dateWords[1].contains("Week")) {
-                date.add(Calendar.WEEK_OF_YEAR, -timeAgo)
-            } else if (dateWords[1].contains("Month")) {
-                date.add(Calendar.MONTH, -timeAgo)
-            } else if (dateWords[1].contains("Year")) {
-                date.add(Calendar.YEAR, -timeAgo)
+            when {
+                dateWords[1].contains("Minute") -> {
+                    date.add(Calendar.MINUTE, -timeAgo)
+                }
+                dateWords[1].contains("Hour") -> {
+                    date.add(Calendar.HOUR_OF_DAY, -timeAgo)
+                }
+                dateWords[1].contains("Day") -> {
+                    date.add(Calendar.DAY_OF_YEAR, -timeAgo)
+                }
+                dateWords[1].contains("Week") -> {
+                    date.add(Calendar.WEEK_OF_YEAR, -timeAgo)
+                }
+                dateWords[1].contains("Month") -> {
+                    date.add(Calendar.MONTH, -timeAgo)
+                }
+                dateWords[1].contains("Year") -> {
+                    date.add(Calendar.YEAR, -timeAgo)
+                }
             }
 
             return date.timeInMillis

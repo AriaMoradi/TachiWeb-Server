@@ -1,17 +1,18 @@
 package xyz.nulldev.ts.syncdeploy
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
 import kotlinx.html.*
 import spark.Request
 import spark.Response
 import spark.Route
 import xyz.nulldev.ts.config.ConfigManager
+import xyz.nulldev.ts.ext.kInstance
 
 class MainPage(private val am: AccountManager,
                private val mainPagePath: String) : Route {
-    private val syncConfig = Kodein.global.instance<ConfigManager>().module<SyncConfigModule>()
+    private val syncConfig by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<SyncConfigModule>()
+    }
 
     //language=html
     override fun handle(request: Request, response: Response): Any {

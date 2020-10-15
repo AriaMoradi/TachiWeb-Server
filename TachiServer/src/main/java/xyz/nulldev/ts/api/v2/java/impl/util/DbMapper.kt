@@ -1,12 +1,13 @@
 package xyz.nulldev.ts.api.v2.java.impl.util
 
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 class DbMapper<IdType, T : Any>(val ids: List<IdType>,
                                 val dbGetter: (IdType) -> T?,
                                 val dbSetter: (T) -> Unit) {
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val db: DatabaseHelper by kInstance()
 
     fun <O> mapGet(mapper: (T) -> O): List<O> {
         return ids.map {

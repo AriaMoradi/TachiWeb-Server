@@ -1,21 +1,24 @@
 package xyz.nulldev.ts.syncdeploy
 
-import com.github.salomonbrys.kodein.conf.KodeinGlobalAware
-import com.github.salomonbrys.kodein.instance
 import com.kizitonwose.time.hours
 import com.kizitonwose.time.milliseconds
 import com.kizitonwose.time.minutes
 import com.kizitonwose.time.schedule
 import mu.KotlinLogging
+import org.kodein.di.conf.DIGlobalAware
 import xyz.nulldev.ts.config.ConfigManager
+import xyz.nulldev.ts.ext.kInstance
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.withLock
 
-class AccountManager: KodeinGlobalAware {
+class AccountManager: DIGlobalAware {
     private val accounts = ConcurrentHashMap<String, Account>()
-    private val syncConfig = instance<ConfigManager>().module<SyncConfigModule>()
+    private val syncConfig by lazy {
+        val configManager by kInstance<ConfigManager>()
+        configManager.module<SyncConfigModule>()
+    }
 
     private val logger = KotlinLogging.logger {}
 

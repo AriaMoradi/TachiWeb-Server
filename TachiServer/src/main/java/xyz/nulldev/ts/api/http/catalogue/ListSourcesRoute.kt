@@ -27,6 +27,7 @@ import org.json.JSONObject
 import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import java.util.*
 
@@ -35,9 +36,9 @@ import java.util.*
  */
 class ListSourcesRoute : TachiWebRoute() {
 
-    private val sourceManager: SourceManager by kInstanceLazy()
+    private val sourceManager: SourceManager by kInstance()
 
-    private val prefs: PreferencesHelper by kInstanceLazy()
+    private val prefs: PreferencesHelper by kInstance()
 
     override fun handleReq(request: Request, response: Response): Any {
         val sources = if(request.queryParams("enabled").equals("true", true))

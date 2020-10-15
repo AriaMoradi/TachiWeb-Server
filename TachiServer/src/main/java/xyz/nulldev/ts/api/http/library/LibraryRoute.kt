@@ -21,6 +21,7 @@ import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
 import xyz.nulldev.ts.api.http.serializer.MangaSerializer
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -30,7 +31,7 @@ import xyz.nulldev.ts.ext.kInstanceLazy
  */
 class LibraryRoute : TachiWebRoute() {
 
-    private val mangaSerializer: MangaSerializer by kInstanceLazy()
+    private val mangaSerializer: MangaSerializer by kInstance()
 
     override fun handleReq(request: Request, response: Response): Any {
         val array = JSONArray()

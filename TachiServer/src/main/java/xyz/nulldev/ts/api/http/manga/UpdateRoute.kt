@@ -23,6 +23,7 @@ import mu.KotlinLogging
 import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import xyz.nulldev.ts.library.LibraryUpdater
 
@@ -33,9 +34,9 @@ import xyz.nulldev.ts.library.LibraryUpdater
  */
 class UpdateRoute : TachiWebRoute() {
 
-    private val libraryUpdater: LibraryUpdater by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
-    private val sourceManager: SourceManager by kInstanceLazy()
+    private val libraryUpdater: LibraryUpdater by kInstance()
+    private val db: DatabaseHelper by kInstance()
+    private val sourceManager: SourceManager by kInstance()
 
     private val logger = KotlinLogging.logger {}
 

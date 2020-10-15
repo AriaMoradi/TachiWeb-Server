@@ -1,14 +1,18 @@
 package xyz.nulldev.ts.ext
 
+import android.content.Context
 import android.preference.PreferenceManager
 import com.f2prateek.rx.preferences.RxSharedPreferences
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import org.kodein.di.DI
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 import eu.kanade.tachiyomi.data.preference.PreferenceKeys as Keys
 
-private val prefs = PreferenceManager.getDefaultSharedPreferences(Kodein.global.instance())
+private val prefs = PreferenceManager.getDefaultSharedPreferences({
+    val context: Context by DI.global.instance()
+    context
+}())
 private val rxPrefs = RxSharedPreferences.create(prefs)
 
 val Keys.authPassword get() = "pref_ts_server_password"

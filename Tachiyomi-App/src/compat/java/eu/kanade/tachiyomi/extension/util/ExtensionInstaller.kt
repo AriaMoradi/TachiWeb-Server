@@ -1,15 +1,14 @@
 package eu.kanade.tachiyomi.extension.util
 
 import android.content.Context
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.lazy
 import eu.kanade.tachiyomi.extension.model.Extension
 import eu.kanade.tachiyomi.extension.model.InstallStep
 import eu.kanade.tachiyomi.network.asObservableSuccess
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.kodein.di.DI
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 import xyz.nulldev.androidcompat.pm.PackageController
 import java.io.File
 
@@ -19,7 +18,7 @@ import java.io.File
  * @param context The application context.
  */
 internal class ExtensionInstaller(private val context: Context) {
-    private val controller: PackageController by Kodein.global.lazy.instance()
+    private val controller: PackageController by DI.global.instance()
 
     /**
      * Adds the given extension to the downloads queue and returns an observable containing its
@@ -36,7 +35,7 @@ internal class ExtensionInstaller(private val context: Context) {
                 tmp.deleteOnExit()
 
                 try {
-                    it.body().byteStream().use { input ->
+                    it.body!!.byteStream().use { input ->
                         tmp.outputStream().use { output ->
                             input.copyTo(output)
                         }

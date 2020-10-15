@@ -1,11 +1,11 @@
 package xyz.nulldev.ts.api.v2.java.impl.extensions
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.lazy
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.extension.model.Extension
+import eu.kanade.tachiyomi.source.SourceManager
+import org.kodein.di.DI
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 import xyz.nulldev.androidcompat.pm.PackageController
 import xyz.nulldev.ts.api.v2.java.model.extensions.ExtensionsController
 import xyz.nulldev.ts.ext.kInstance
@@ -13,7 +13,7 @@ import xyz.nulldev.ts.ext.kInstanceLazy
 import java.io.File
 
 class ExtensionsControllerImpl : ExtensionsController {
-    private val controller by kInstanceLazy<PackageController>()
+    private val controller by kInstance<PackageController>()
 
     override fun get(vararg packageNames: String)
             = ExtensionCollectionImpl(packageNames.toList()) // TODO Check these extensions exist
@@ -31,7 +31,7 @@ class ExtensionsControllerImpl : ExtensionsController {
     }
 
     override fun reloadLocal() {
-        manager.init(kInstance())
+        manager.init({ val sourceManager: SourceManager by kInstance(); sourceManager }())
     }
 
     override fun installExternal(apk: File) {
@@ -40,7 +40,7 @@ class ExtensionsControllerImpl : ExtensionsController {
     }
 
     companion object {
-        private val manager by Kodein.global.lazy.instance<ExtensionManager>()
+        private val manager by DI.global.instance<ExtensionManager>()
 
         internal fun getAllExtensions(): List<Extension> {
             var localExtensions = manager.installedExtensions +

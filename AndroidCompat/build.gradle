@@ -6,13 +6,13 @@ dependencies {
     compile fileTree(dir: new File(rootProject.rootDir, "libs/other"), include: "*.jar")
 
     // JSON
-    compile "com.google.code.gson:gson:2.8.5"
+    compile "com.google.code.gson:gson:2.8.6"
 
     // Javassist
-    compile "org.javassist:javassist:3.21.0-GA"
+    compile "org.javassist:javassist:3.27.0-GA"
 
     // Coroutines
-    def kotlinx_coroutines_version = '1.1.1'
+    def kotlinx_coroutines_version = '1.3.9'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlinx_coroutines_version"
 
@@ -26,13 +26,13 @@ dependencies {
     compile "dex2jar:dex-translator"
 
     // APK parser
-    compile 'net.dongliu:apk-parser:2.6.4'
+    compile 'net.dongliu:apk-parser:2.6.10'
 
     // APK sig verifier
-    compile 'com.android.tools.build:apksig:2.3.0'
+    compile 'com.android.tools.build:apksig:4.2.0-alpha13'
     
     // AndroidX annotations
-    compile "androidx.annotation:annotation:1.0.0"
+    compile "androidx.annotation:annotation:1.2.0-alpha01"
 }
 
 def fatJarTask = tasks.getByPath(':AndroidCompat:JVMPatch:fatJar')

@@ -9,6 +9,7 @@ import xyz.nulldev.ts.api.java.model.image.ImageController
 import xyz.nulldev.ts.api.java.util.pageList
 import xyz.nulldev.ts.api.java.util.sourceObj
 import xyz.nulldev.ts.api.java.util.updateInfo
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -17,7 +18,7 @@ import java.io.OutputStream
 import java.nio.file.Files
 
 class ImageControllerImpl : ImageController {
-    private val coverCache: CoverCache by kInstanceLazy()
+    private val coverCache: CoverCache by kInstance()
 
     override fun fetchCover(manga: Manga, stream: OutputStream): String {
         //Find thumbnail URL
@@ -38,7 +39,7 @@ class ImageControllerImpl : ImageController {
         val source = manga.sourceObj
 
         //Check cache
-        val cacheFile = coverCache.getCoverFile(url!!)
+        val cacheFile = coverCache.getCoverFile(url)
         val parentFile = cacheFile.parentFile
         //Make cache dirs
         parentFile.mkdirs()
@@ -53,7 +54,7 @@ class ImageControllerImpl : ImageController {
                     val httpResponse = source.client.newCall(
                             okhttp3.Request.Builder().headers(source.headers).url(url!!).build()).execute()
                     httpResponse.use {
-                        val input = httpResponse!!.body().byteStream()
+                        val input = httpResponse.body!!.byteStream()
                         input.use {
                             val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                             while (true) {

@@ -25,6 +25,7 @@ import spark.Request
 import spark.Response
 import xyz.nulldev.ts.api.http.TachiWebRoute
 import xyz.nulldev.ts.api.java.util.pageList
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 
 /**
@@ -34,9 +35,9 @@ import xyz.nulldev.ts.ext.kInstanceLazy
  */
 class PageCountRoute : TachiWebRoute() {
 
-    private val downloadManager: DownloadManager by kInstanceLazy()
-    private val sourceManager: SourceManager by kInstanceLazy()
-    private val db: DatabaseHelper by kInstanceLazy()
+    private val downloadManager: DownloadManager by kInstance()
+    private val sourceManager: SourceManager by kInstance()
+    private val db: DatabaseHelper by kInstance()
 
     private val logger = LoggerFactory.getLogger(javaClass)
 

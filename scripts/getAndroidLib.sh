@@ -40,7 +40,7 @@ function downloadLib {
 }
 
 function downloadCentralLib {
-    downloadLib "http://central.maven.org/maven2/" "$1"
+    downloadLib "https://repo1.maven.org/maven2/" "$1"
 }
 
 function downloadJitpackLib {
@@ -52,8 +52,8 @@ function downloadBintrayLib {
 }
 
 # Download libraries here
-downloadCentralLib "com.jakewharton.timber:timber:4.5.1"
-downloadJitpackLib "com.github.seven332:unifile:1.0.0"
+downloadCentralLib "com.jakewharton.timber:timber:4.7.1"
+downloadJitpackLib "com.github.inorichi:unifile:e9ee588"
 downloadJitpackLib "com.github.inorichi:junrar-android:634c1f5"
 #downloadBintrayLib "inorichi/tachiyomi" "eu.kanade.tachiyomi:extensions-library:1.0"
 downloadBintrayLib "inorichi/maven" "eu.kanade.storio:storio:1.13.0"

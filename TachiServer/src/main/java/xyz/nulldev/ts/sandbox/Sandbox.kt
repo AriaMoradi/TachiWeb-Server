@@ -1,12 +1,12 @@
 package xyz.nulldev.ts.sandbox
 
 import android.content.Context
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.singleton
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.conf.global
+import org.kodein.di.instance
+import org.kodein.di.singleton
 import xyz.nulldev.androidcompat.androidimpl.CustomContext
 import xyz.nulldev.androidcompat.androidimpl.FakePackageManager
 import xyz.nulldev.androidcompat.config.ApplicationInfoConfigModule
@@ -35,8 +35,8 @@ class Sandbox(configFolder: File) : Closeable {
     }
 
     val kodein by lazy {
-        Kodein {
-            extend(Kodein.global)
+        DI {
+            extend(DI.global)
 
             //Define sandboxed components
 
@@ -44,13 +44,13 @@ class Sandbox(configFolder: File) : Closeable {
 
             bind<AndroidFiles>(overrides = true) with singleton { AndroidFiles(configManager) }
 
-            bind<ApplicationInfoImpl>(overrides = true) with singleton { ApplicationInfoImpl(this) }
+            bind<ApplicationInfoImpl>(overrides = true) with singleton { ApplicationInfoImpl(di) }
 
             bind<FakePackageManager>(overrides = true) with singleton { FakePackageManager() }
 
             bind<PackageController>(overrides = true) with singleton { PackageController() }
 
-            bind<CustomContext>(overrides = true) with singleton { CustomContext(this) }
+            bind<CustomContext>(overrides = true) with singleton { CustomContext(di) }
             bind<Context>(overrides = true) with singleton { instance<CustomContext>() }
 
             bind<DatabaseHelper>(overrides = true) with singleton { DatabaseHelper(instance()) }
@@ -61,6 +61,7 @@ class Sandbox(configFolder: File) : Closeable {
      * Clean-up sandbox
      */
     override fun close() {
-        kodein.instance<DatabaseHelper>().db.close()
+        val db by kodein.instance<DatabaseHelper>()
+        db.db.close()
     }
 }

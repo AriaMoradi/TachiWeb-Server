@@ -1,11 +1,6 @@
 package xyz.nulldev.ts.api.http.sync
 
 import android.content.Context
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.KodeinAware
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.lazy
 import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.sync.LibrarySyncManager
 import eu.kanade.tachiyomi.data.sync.gson.SyncGsonProvider
@@ -14,6 +9,10 @@ import eu.kanade.tachiyomi.data.sync.protocol.ReportGenerator
 import eu.kanade.tachiyomi.data.sync.protocol.models.SyncReport
 import eu.kanade.tachiyomi.data.sync.protocol.models.common.SyncResponse
 import eu.kanade.tachiyomi.data.sync.protocol.snapshot.SnapshotHelper
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Response
@@ -25,13 +24,13 @@ import xyz.nulldev.ts.api.http.TachiWebRoute
  * CAVEAT: Ensure this route is able to be fully isolated from the rest of the server
  *         This condition must be satisfied to ensure multiple users can sync to the same server
  */
-class SyncRoute(override val kodein: Kodein = Kodein.global,
-                requiresAuth: Boolean = true) : TachiWebRoute(requiresAuth = requiresAuth), KodeinAware {
-    private val context: Context by lazy.instance()
-    private val db: DatabaseHelper by lazy.instance()
-    private val syncManager: LibrarySyncManager by lazy.instance()
+class SyncRoute(override val di: DI = DI.global,
+                requiresAuth: Boolean = true) : TachiWebRoute(requiresAuth = requiresAuth), DIAware {
+    private val context: Context by instance()
+    private val db: DatabaseHelper by instance()
+    private val syncManager: LibrarySyncManager by instance()
     private val snapshots by lazy { SnapshotHelper(context, db) }
-    private val lastSyncs by lazy { LastSyncDb(kodein) }
+    private val lastSyncs by lazy { LastSyncDb(di) }
 
     private val logger = LoggerFactory.getLogger(javaClass)
 

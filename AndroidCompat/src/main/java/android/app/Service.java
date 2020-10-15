@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.IBinder;
 import android.util.Log;
-import com.github.salomonbrys.kodein.Kodein;
 import kotlin.NotImplementedError;
 import xyz.nulldev.androidcompat.service.ServiceSupport;
 import xyz.nulldev.androidcompat.util.KodeinGlobalHelper;

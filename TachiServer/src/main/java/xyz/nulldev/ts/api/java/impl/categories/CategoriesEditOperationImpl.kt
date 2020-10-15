@@ -19,18 +19,18 @@ class CategoriesEditOperationImpl(private val categories: MutableList<Category>,
             throw IllegalStateException("This operation has already been committed!")
 
         //Only one operation committed at the same time
-        synchronized(parent, {
+        synchronized(parent) {
             //Ensure that the parent categories have not changed since this edit operation was opened
-            if(editSnapshot != parent.editIndex)
+            if (editSnapshot != parent.editIndex)
                 throw IllegalStateException("The categories have changed since this operation was opened!")
 
             TachiyomiAPI.database.inTransaction {
                 //Transform original categories list into lookup map
                 val categoriesMap = TachiyomiAPI.database
-                        .getCategories()
-                        .executeAsBlocking()
-                        .associateBy { it.id }
-                        .toMutableMap()
+                    .getCategories()
+                    .executeAsBlocking()
+                    .associateBy { it.id }
+                    .toMutableMap()
 
                 val newCategories = categories.mapIndexed { index, category ->
                     //Do not save custom implementations of Category
@@ -38,7 +38,7 @@ class CategoriesEditOperationImpl(private val categories: MutableList<Category>,
                         ?: throw IllegalStateException("Custom implementations of categories cannot be used!")
 
                     val newCategory = categoriesMap.remove(category.id)
-                            ?: eu.kanade.tachiyomi.data.database.models.Category.create(category.name)
+                        ?: eu.kanade.tachiyomi.data.database.models.Category.create(category.name)
 
                     newCategory.order = index
 
@@ -54,6 +54,6 @@ class CategoriesEditOperationImpl(private val categories: MutableList<Category>,
             //Update edit snapshot and operation status
             parent.editIndex++
             saved = true
-        })
+        }
     }
 }

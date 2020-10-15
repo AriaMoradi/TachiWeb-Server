@@ -1,9 +1,10 @@
 package xyz.nulldev.ts.ext
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.lazy
+import org.kodein.di.DI
+import org.kodein.di.conf.global
+import org.kodein.di.instance
 
-inline fun <reified T : Any> kInstanceLazy() = Kodein.global.lazy.instance<T>()
-inline fun <reified T : Any> kInstance() = Kodein.global.instance<T>()
+@Deprecated("All of kodein is lazy", replaceWith = ReplaceWith("kInstance()"))
+inline fun <reified T : Any> kInstanceLazy() = DI.global.instance<T>()
+
+inline fun <reified T : Any> kInstance() = DI.global.instance<T>()

@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.source.online.ParsedHttpSource
 import okhttp3.FormBody
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -54,7 +55,7 @@ class Mangasee : ParsedHttpSource() {
     override fun searchMangaSelector() = "div.requested > div.row"
 
     override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request {
-        val url = HttpUrl.parse("$baseUrl/search/request.php")!!.newBuilder()
+        val url = "$baseUrl/search/request.php".toHttpUrlOrNull()!!.newBuilder()
         if (!query.isEmpty()) url.addQueryParameter("keyword", query)
         val genres = mutableListOf<String>()
         val genresNo = mutableListOf<String>()
@@ -84,12 +85,12 @@ class Mangasee : ParsedHttpSource() {
     }
 
     private fun convertQueryToPost(page: Int, url: String): Pair<FormBody.Builder, String> {
-        val url = HttpUrl.parse(url)!!
+        val url = url.toHttpUrlOrNull()!!
         val body = FormBody.Builder().add("page", page.toString())
-        for (i in 0..url.querySize() - 1) {
-            body.add(url.queryParameterName(i), url.queryParameterValue(i))
+        for (i in 0 until url.querySize) {
+            body.add(url.queryParameterName(i), url.queryParameterValue(i)!!)
         }
-        val requestUrl = url.scheme() + "://" + url.host() + url.encodedPath()
+        val requestUrl = url.scheme + "://" + url.host + url.encodedPath
         return Pair(body, requestUrl)
     }
 
@@ -129,7 +130,7 @@ class Mangasee : ParsedHttpSource() {
 
         val chapter = SChapter.create()
         chapter.setUrlWithoutDomain(urlElement.attr("href"))
-        chapter.name = element.select("span.chapterLabel").first().text()?.let { it } ?: ""
+        chapter.name = element.select("span.chapterLabel").first().text() ?: ""
         chapter.date_upload = element.select("time").first()?.attr("datetime")?.let { parseChapterDate(it) } ?: 0
         return chapter
     }

@@ -1,10 +1,6 @@
 package xyz.nulldev.ts
 
 import android.content.Context
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.singleton
 import com.google.gson.Gson
 import eu.kanade.tachiyomi.data.backup.BackupManager
 import eu.kanade.tachiyomi.data.cache.ChapterCache
@@ -17,45 +13,50 @@ import eu.kanade.tachiyomi.data.track.TrackManager
 import eu.kanade.tachiyomi.extension.ExtensionManager
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.source.SourceManager
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import xyz.nulldev.ts.cache.AsyncDiskLFUCache
 import xyz.nulldev.ts.config.ConfigManager
 import xyz.nulldev.ts.config.ServerConfig
+import xyz.nulldev.ts.ext.kInstance
 import xyz.nulldev.ts.ext.kInstanceLazy
 import xyz.nulldev.ts.library.LibraryUpdater
 import java.io.File
 
 class TachiyomiKodeinModule {
 
-    val context: Context by kInstanceLazy()
+    val context: Context by kInstance()
 
-    fun create() = Kodein.Module {
+    fun create() = DI.Module("TachiyomiKodeinModule") {
         //Bridge to Tachiyomi dependencies
-        bind<PreferencesHelper>() with singleton { Injekt.get<PreferencesHelper>() }
+        bind<PreferencesHelper>() with singleton { Injekt.get() }
 
-        bind<DatabaseHelper>() with singleton { Injekt.get<DatabaseHelper>() }
+        bind<DatabaseHelper>() with singleton { Injekt.get() }
 
-        bind<ChapterCache>() with singleton { Injekt.get<ChapterCache>() }
+        bind<ChapterCache>() with singleton { Injekt.get() }
 
-        bind<CoverCache>() with singleton { Injekt.get<CoverCache>() }
+        bind<CoverCache>() with singleton { Injekt.get() }
 
-        bind<NetworkHelper>() with singleton { Injekt.get<NetworkHelper>() }
+        bind<NetworkHelper>() with singleton { Injekt.get() }
 
-        bind<SourceManager>() with singleton { Injekt.get<SourceManager>() }
+        bind<SourceManager>() with singleton { Injekt.get() }
 
-        bind<ExtensionManager>() with singleton { Injekt.get<ExtensionManager>() }
+        bind<ExtensionManager>() with singleton { Injekt.get() }
 
-        bind<DownloadManager>() with singleton { Injekt.get<DownloadManager>() }
+        bind<DownloadManager>() with singleton { Injekt.get() }
 
-        bind<TrackManager>() with singleton { Injekt.get<TrackManager>() }
+        bind<TrackManager>() with singleton { Injekt.get() }
 
-        bind<LibrarySyncManager>() with singleton { Injekt.get<LibrarySyncManager>() }
+        bind<LibrarySyncManager>() with singleton { Injekt.get() }
 
-        bind<Gson>() with singleton { Injekt.get<Gson>() }
+        bind<Gson>() with singleton { Injekt.get() }
 
         //Custom dependencies
-        bind<BackupManager>() with singleton { BackupManager(context) }
+        bind<BackupManager>() with singleton { BackupManager(this@TachiyomiKodeinModule.context) }
 
         bind<LibraryUpdater>() with singleton { LibraryUpdater() }
 
