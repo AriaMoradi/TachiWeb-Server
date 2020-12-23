@@ -1,10 +1,10 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.4.10" apply false // Also in settings.gradle
+    id "org.jetbrains.kotlin.jvm" version "1.4.21" apply false // Also in buildSrc Config.kt
     id "java"
 }
 
 wrapper {
-    gradleVersion = "6.5.1"
+    gradleVersion = "6.7.1"
 }
 
 allprojects {
@@ -52,8 +52,9 @@ configure(javaProjects) {
 
     dependencies {
         // Kotlin
-        compile "org.jetbrains.kotlin:kotlin-stdlib:${gradle.kotlinVersion}"
-        testCompile "org.jetbrains.kotlin:kotlin-test:${gradle.kotlinVersion}"
+        compile "org.jetbrains.kotlin:kotlin-stdlib:${Config.kotlinVersion}"
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Config.kotlinVersion}"
+        testCompile "org.jetbrains.kotlin:kotlin-test:${Config.kotlinVersion}"
     }
 }
 
@@ -83,8 +84,7 @@ configure([
         compile "org.jsoup:jsoup:1.13.1"
 
         // Kotlin
-        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${gradle.kotlinVersion}"
-        compile "org.jetbrains.kotlin:kotlin-reflect:${gradle.kotlinVersion}"
+        compile "org.jetbrains.kotlin:kotlin-reflect:${Config.kotlinVersion}"
     }
 }
 
