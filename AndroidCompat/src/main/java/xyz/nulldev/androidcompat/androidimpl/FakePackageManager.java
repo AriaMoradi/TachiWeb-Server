@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FakePackageManager extends PackageManager {
-    private PackageController controller = KodeinGlobalHelper.Companion.instance(PackageController.class);
+    private PackageController controller = KodeinGlobalHelper.instance(PackageController.class);
 
     @Override
     public PackageInfo getPackageInfo(String packageName, int flags) throws NameNotFoundException {

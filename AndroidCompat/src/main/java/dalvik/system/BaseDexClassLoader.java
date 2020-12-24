@@ -33,7 +33,7 @@ import java.util.Enumeration;
  * {@link ClassLoader} implementations.
  */
 public class BaseDexClassLoader extends ClassLoader {
-    private PackageController controller = KodeinGlobalHelper.Companion.instance(PackageController.class);
+    private PackageController controller = KodeinGlobalHelper.instance(PackageController.class);
 
     private final URLClassLoader realClassloader;
 

@@ -10,7 +10,7 @@ import java.util.Calendar;
  * BuildConfig compat class.
  */
 public class BuildConfigCompat {
-    private static ApplicationInfoImpl applicationInfo = KodeinGlobalHelper.Companion.instance(ApplicationInfoImpl.class);
+    private static ApplicationInfoImpl applicationInfo = KodeinGlobalHelper.instance(ApplicationInfoImpl.class);
 
     public static final boolean DEBUG = applicationInfo.getDebug();
 

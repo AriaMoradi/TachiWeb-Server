@@ -55,17 +55,17 @@ import java.util.Map;
 public class CustomContext extends Context implements DIAware {
     private DI kodein;
     public CustomContext() {
-        this(KodeinGlobalHelper.Companion.kodein());
+        this(KodeinGlobalHelper.kodein());
     }
 
     public CustomContext(DI kodein) {
         this.kodein = kodein;
 
         //Init configs
-        androidFiles = KodeinGlobalHelper.Companion.instance(AndroidFiles.class, getDi());
-        applicationInfo = KodeinGlobalHelper.Companion.instance(ApplicationInfoImpl.class, getDi());
-        serviceSupport = KodeinGlobalHelper.Companion.instance(ServiceSupport.class, getDi());
-        fakePackageManager = KodeinGlobalHelper.Companion.instance(FakePackageManager.class, getDi());
+        androidFiles = KodeinGlobalHelper.instance(AndroidFiles.class, getDi());
+        applicationInfo = KodeinGlobalHelper.instance(ApplicationInfoImpl.class, getDi());
+        serviceSupport = KodeinGlobalHelper.instance(ServiceSupport.class, getDi());
+        fakePackageManager = KodeinGlobalHelper.instance(FakePackageManager.class, getDi());
     }
 
     @NotNull

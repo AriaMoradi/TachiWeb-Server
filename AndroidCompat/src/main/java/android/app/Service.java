@@ -299,7 +299,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 public abstract class Service extends ContextWrapper implements ComponentCallbacks2 {
 
-    private static final ServiceSupport serviceSupport = KodeinGlobalHelper.Companion.instance(ServiceSupport.class);
+    private static final ServiceSupport serviceSupport = KodeinGlobalHelper.instance(ServiceSupport.class);
 
     private static final String TAG = "Service";
     /**
@@ -328,7 +328,7 @@ public abstract class Service extends ContextWrapper implements ComponentCallbac
     public Service() {
         //==================[THIS LINE MODIFIED FROM ANDROID SOURCE!]==================
         //Service must be initialized with a base context!
-        super(KodeinGlobalHelper.Companion.instance(Context.class));
+        super(KodeinGlobalHelper.instance(Context.class));
     }
     /** Return the application that owns this service. */
     public final Application getApplication() {

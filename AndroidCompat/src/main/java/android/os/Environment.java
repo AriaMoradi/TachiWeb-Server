@@ -9,7 +9,7 @@ import java.io.File;
  * Android compatibility layer for files
  */
 public class Environment {
-    private static AndroidFiles androidFiles = KodeinGlobalHelper.Companion.instance(AndroidFiles.class);
+    private static AndroidFiles androidFiles = KodeinGlobalHelper.instance(AndroidFiles.class);
 
     public static String DIRECTORY_ALARMS = getHomeDirectory("Alarms").getAbsolutePath();
     public static String DIRECTORY_DCIM = getHomeDirectory("DCIM").getAbsolutePath();

@@ -29,7 +29,6 @@ import xyz.nulldev.ts.api.v3.opWithParamsAndContext
 import xyz.nulldev.ts.api.v3.operations.manga.asWeb
 import xyz.nulldev.ts.api.v3.util.await
 import xyz.nulldev.ts.ext.kInstance
-import xyz.nulldev.ts.ext.kInstanceLazy
 import java.util.*
 
 private const val SOURCE_ID_PARAM = "sourceId"
